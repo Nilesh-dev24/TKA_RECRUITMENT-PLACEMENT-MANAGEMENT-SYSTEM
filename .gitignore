@@ -1,0 +1,22 @@
+venv/\n__pycache__/\n*.pyc\n.env\n
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# IDE settings
+.vscode/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp

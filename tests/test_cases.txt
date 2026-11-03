@@ -1,0 +1,11 @@
+Manual test checklist:
+1. Start MySQL and execute sql/database.sql.
+2. Set DB_PASSWORD in PowerShell.
+3. Run python main.py.
+4. Add a candidate with valid details.
+5. Try duplicate email and mobile; database should reject them.
+6. Try percentage below 0 or above 100; service should reject it.
+7. Try negative backlogs; service should reject it.
+8. View and search candidate records.
+9. Deactivate a candidate.
+10. Continue implementing company, job, application, interview, offer, placement and report modules.
