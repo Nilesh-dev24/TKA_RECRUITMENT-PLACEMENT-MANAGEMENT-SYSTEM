@@ -3,7 +3,7 @@ from model.candidate import Candidate
 from service.candidate_service import CandidateService
 from service.company_service import CompanyService
 from service.job_service import JobService
-
+from service.application_service import ApplicationService
 def candidate_menu():
     service = CandidateService()
 
@@ -228,6 +228,74 @@ def job_menu():
             print("Error:", error)
 
 
+def application_menu():
+    service = ApplicationService()
+
+    while True:
+        print("\n--- APPLICATION MANAGEMENT ---")
+        print("1 Apply for job")
+        print("2 View applications")
+        print("3 Search application")
+        print("4 Update application status")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                candidate_id = int(input("Candidate ID: "))
+                job_id = int(input("Job ID: "))
+
+                result = service.apply_for_job(candidate_id, job_id)
+
+                print("Application created successfully. ID:", result)
+
+            elif choice == "2":
+                applications = service.view_applications()
+
+                if applications:
+                    for application in applications:
+                        print(application)
+                else:
+                    print("No applications found.")
+
+            elif choice == "3":
+                application_id = int(input("Application ID: "))
+
+                application = service.search_application(application_id)
+
+                print(application if application else "Application not found.")
+
+            
+            elif choice == "4":
+                application_id = int(input("Application ID: "))
+
+                status = input(
+                    "Enter status (APPLIED/SHORTLISTED/INTERVIEW/SELECTED/OFFERED/JOINED/REJECTED): "
+                ).strip().upper()
+
+                result = service.update_application_status(
+                    application_id, status
+                )
+
+                if result == "UNCHANGED":
+                    print("Application already has this status.")
+                elif result:
+                    print("Application status updated successfully.")
+                else:
+                    print("Update failed.")
+
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except (ValueError, TypeError) as error:
+            print("Error:", error)
+
+
 def main_menu():
     while True:
         print("\n======================================")
@@ -254,11 +322,14 @@ def main_menu():
         elif choice == "3":
             job_menu()
 
+        elif choice == "4":
+            application_menu()
+
         elif choice == "9":
             print("Goodbye!")
             break
 
-        elif choice in ("4", "5", "6", "7", "8"):
+        elif choice in ( "5", "6", "7", "8"):
             print("This module is scaffolded for the next development phase.")
 
         else:
