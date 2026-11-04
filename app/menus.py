@@ -2,7 +2,7 @@
 from model.candidate import Candidate
 from service.candidate_service import CandidateService
 from service.company_service import CompanyService
-
+from service.job_service import JobService
 
 def candidate_menu():
     service = CandidateService()
@@ -133,6 +133,101 @@ def company_menu():
             print("Error:", error)
 
 
+def job_menu():
+    service = JobService()
+
+    while True:
+        print("\n--- JOB MANAGEMENT ---")
+        print("1 Add job")
+        print("2 View jobs")
+        print("3 Search job")
+        print("4 Update job")
+        print("5 Close job")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                company_id = int(input("Company ID: "))
+                job_title = input("Job title: ")
+                technology = input("Technology: ")
+                openings = int(input("Number of openings: "))
+                location = input("Location: ")
+                package_lpa = float(input("Package (LPA): "))
+                min_percentage = float(input("Minimum percentage: "))
+                passing_year = int(input("Passing year: "))
+                max_backlogs = int(input("Maximum backlogs: "))
+                deadline = input("Deadline (YYYY-MM-DD): ")
+
+                result = service.add_job(
+                    company_id, job_title, technology, openings,
+                    location, package_lpa, min_percentage,
+                    passing_year, max_backlogs, deadline
+                )
+
+                print("Created job ID:", result)
+
+            elif choice == "2":
+                jobs = service.view_jobs()
+
+                if jobs:
+                    for job in jobs:
+                        print(job)
+                else:
+                    print("No jobs found.")
+
+            elif choice == "3":
+                job_id = int(input("Job ID: "))
+                job = service.search_job(job_id)
+
+                print(job if job else "Job not found.")
+
+            elif choice == "4":
+                job_id = int(input("Job ID: "))
+
+                if service.search_job(job_id):
+                    company_id = int(input("Company ID: "))
+                    job_title = input("New job title: ")
+                    technology = input("New technology: ")
+                    openings = int(input("New openings: "))
+                    location = input("New location: ")
+                    package_lpa = float(input("New package (LPA): "))
+                    min_percentage = float(input("New minimum percentage: "))
+                    passing_year = int(input("New passing year: "))
+                    max_backlogs = int(input("New maximum backlogs: "))
+                    deadline = input("New deadline (YYYY-MM-DD): ")
+
+                    result = service.update_job(
+                        job_id, company_id, job_title, technology,
+                        openings, location, package_lpa,
+                        min_percentage, passing_year,
+                        max_backlogs, deadline
+                    )
+
+                    print("Job updated successfully." if result else "Update failed.")
+                else:
+                    print("Job not found.")
+
+            elif choice == "5":
+                job_id = int(input("Job ID: "))
+
+                if service.search_job(job_id):
+                    service.close_job(job_id)
+                    print("Job closed successfully.")
+                else:
+                    print("Job not found.")
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except (ValueError, TypeError) as error:
+            print("Error:", error)
+
+
 def main_menu():
     while True:
         print("\n======================================")
@@ -156,11 +251,14 @@ def main_menu():
         elif choice == "2":
             company_menu()
 
+        elif choice == "3":
+            job_menu()
+
         elif choice == "9":
             print("Goodbye!")
             break
 
-        elif choice in ("3", "4", "5", "6", "7", "8"):
+        elif choice in ("4", "5", "6", "7", "8"):
             print("This module is scaffolded for the next development phase.")
 
         else:

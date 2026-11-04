@@ -1,6 +1,19 @@
+
 class Job:
-    def __init__(self, company_id, job_title, technology, openings, location, package_lpa,
-                 min_percentage, passing_year, max_backlogs, deadline):
+
+    def __init__(
+        self,
+        company_id,
+        job_title,
+        technology,
+        openings,
+        location,
+        package_lpa,
+        min_percentage,
+        passing_year,
+        max_backlogs,
+        deadline
+    ):
         self.company_id = company_id
         self.job_title = job_title
         self.technology = technology
