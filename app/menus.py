@@ -4,6 +4,9 @@ from service.candidate_service import CandidateService
 from service.company_service import CompanyService
 from service.job_service import JobService
 from service.application_service import ApplicationService
+from service.interview_service import InterviewService
+
+
 def candidate_menu():
     service = CandidateService()
 
@@ -296,6 +299,115 @@ def application_menu():
             print("Error:", error)
 
 
+def interview_menu():
+    service = InterviewService()
+
+    while True:
+        print("\n--- INTERVIEW MANAGEMENT ---")
+        print("1 Schedule interview")
+        print("2 View interviews")
+        print("3 Search interview")
+        print("4 Update interview details and result")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                application_id = int(input("Application ID: "))
+                round_name = input("Round name: ")
+                interview_date = input(
+                    "Interview date (YYYY-MM-DD HH:MM:SS): "
+                )
+                mode = input("Mode (ONLINE/OFFLINE): ")
+                interviewer = input("Interviewer name: ")
+
+                result = service.schedule_interview(
+                    application_id,
+                    round_name,
+                    interview_date,
+                    mode,
+                    interviewer
+                )
+
+                print("Interview scheduled. Interview ID:", result)
+
+            elif choice == "2":
+                interviews = service.view_interviews()
+
+                if interviews:
+                    for interview in interviews:
+                        print(interview)
+                else:
+                    print("No interviews found.")
+
+            elif choice == "3":
+                interview_id = int(input("Interview ID: "))
+                interview = service.search_interview(interview_id)
+
+                print(interview if interview else "Interview not found.")
+
+            elif choice == "4":
+                interview_id = int(input("Interview ID: "))
+
+                if service.search_interview(interview_id):
+
+                    application_id = int(input("Application ID: "))
+                    round_name = input("Round name: ")
+
+                    interview_date = input(
+                        "Interview date (YYYY-MM-DD HH:MM:SS): "
+                    )
+
+                    mode = input("Mode (ONLINE/OFFLINE): ")
+                    interviewer = input("Interviewer name: ")
+
+                    technical_rating = int(
+                        input("Technical rating (1-10): ")
+                    )
+
+                    communication_rating = int(
+                        input("Communication rating (1-10): ")
+                    )
+
+                    remarks = input("Remarks: ")
+                    result = input("Result (PENDING/PASS/FAIL): ")
+                    status = input(
+                        "Status (SCHEDULED/COMPLETED/CANCELLED): "
+                    )
+
+                    updated = service.update_interview(
+                        interview_id,
+                        application_id,
+                        round_name,
+                        interview_date,
+                        mode,
+                        interviewer,
+                        technical_rating,
+                        communication_rating,
+                        remarks,
+                        result,
+                        status
+                    )
+
+                    print(
+                        "Interview updated successfully."
+                        if updated else "Update failed."
+                    )
+
+                else:
+                    print("Interview not found.")
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except (ValueError, TypeError) as error:
+            print("Error:", error)
+
+
 def main_menu():
     while True:
         print("\n======================================")
@@ -325,11 +437,17 @@ def main_menu():
         elif choice == "4":
             application_menu()
 
+        elif choice == "5":
+            interview_menu()
+
+
+
+
         elif choice == "9":
             print("Goodbye!")
             break
 
-        elif choice in ( "5", "6", "7", "8"):
+        elif choice in ( "6", "7", "8"):
             print("This module is scaffolded for the next development phase.")
 
         else:
