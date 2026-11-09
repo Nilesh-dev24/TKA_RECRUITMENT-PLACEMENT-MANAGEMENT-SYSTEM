@@ -5,6 +5,8 @@ from service.company_service import CompanyService
 from service.job_service import JobService
 from service.application_service import ApplicationService
 from service.interview_service import InterviewService
+from service.offer_service import OfferService
+from service.placement_service import PlacementService
 
 
 def candidate_menu():
@@ -407,6 +409,135 @@ def interview_menu():
         except (ValueError, TypeError) as error:
             print("Error:", error)
 
+def offer_menu():
+    service = OfferService()
+
+    while True:
+        print("\n--- OFFER MANAGEMENT ---")
+        print("1 Create offer")
+        print("2 View offers")
+        print("3 Search offer")
+        print("4 Update offer status")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                application_id = int(input("Application ID: "))
+                designation = input("Designation: ")
+                package_lpa = float(input("Package (LPA): "))
+                offer_date = input("Offer date (YYYY-MM-DD): ")
+                joining_date = input("Joining date (YYYY-MM-DD): ")
+
+                result = service.create_offer(
+                    application_id,
+                    designation,
+                    package_lpa,
+                    offer_date,
+                    joining_date
+                )
+
+                print("Offer created. Offer ID:", result)
+
+            elif choice == "2":
+                offers = service.view_offers()
+
+                if offers:
+                    for offer in offers:
+                        print(offer)
+                else:
+                    print("No offers found.")
+
+            elif choice == "3":
+                offer_id = int(input("Offer ID: "))
+                offer = service.search_offer(offer_id)
+
+                print(offer if offer else "Offer not found.")
+
+            elif choice == "4":
+                offer_id = int(input("Offer ID: "))
+                status = input(
+                    "New status (PENDING/ACCEPTED/REJECTED/WITHDRAWN): "
+                )
+
+                result = service.update_offer_status(offer_id, status)
+
+                print(
+                    "Offer status updated successfully."
+                    if result else "Update failed."
+                )
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except (ValueError, TypeError) as error:
+            print("Error:", error)
+
+def placement_menu():
+    service = PlacementService()
+
+    while True:
+        print("\n--- PLACEMENT MANAGEMENT ---")
+        print("1 Create placement")
+        print("2 View placements")
+        print("3 Search placement")
+        print("4 Update placement status")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                offer_id = int(input("Offer ID: "))
+
+                result = service.create_placement(offer_id)
+
+                print("Placement created. Placement ID:", result)
+
+            elif choice == "2":
+                placements = service.view_placements()
+
+                if placements:
+                    for placement in placements:
+                        print(placement)
+                else:
+                    print("No placements found.")
+
+            elif choice == "3":
+                placement_id = int(input("Placement ID: "))
+                placement = service.search_placement(placement_id)
+
+                print(placement if placement else "Placement not found.")
+
+            elif choice == "4":
+                placement_id = int(input("Placement ID: "))
+                status = input(
+                    "Status (ACTIVE/COMPLETED/CANCELLED): "
+                )
+
+                result = service.update_placement_status(
+                    placement_id,
+                    status
+                )
+
+                print(
+                    "Placement status updated successfully."
+                    if result else "Update failed."
+                )
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except (ValueError, TypeError) as error:
+            print("Error:", error)
+
 
 def main_menu():
     while True:
@@ -440,6 +571,11 @@ def main_menu():
         elif choice == "5":
             interview_menu()
 
+        elif choice == "6":
+            offer_menu()
+
+        elif choice == "7":
+            placement_menu()
 
 
 
@@ -447,7 +583,7 @@ def main_menu():
             print("Goodbye!")
             break
 
-        elif choice in ( "6", "7", "8"):
+        elif choice in (  "8"):
             print("This module is scaffolded for the next development phase.")
 
         else:
