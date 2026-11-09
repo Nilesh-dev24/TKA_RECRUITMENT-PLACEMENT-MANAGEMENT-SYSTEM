@@ -1,3 +1,4 @@
+
 from dao.base_dao import BaseDAO
 from model.placement import Placement
 
@@ -7,32 +8,36 @@ class PlacementDAO(BaseDAO):
     def add(self, placement):
         query = """
             INSERT INTO placements
-            (offer_id, candidate_id, company_id,
-             joining_date, placement_status)
-            VALUES (%s, %s, %s, %s, %s)
+            (candidate_id, company_id, designation,
+             final_package, actual_joining_date, joining_status)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """
 
         return self.run(query, (
-            placement.offer_id,
             placement.candidate_id,
             placement.company_id,
-            placement.joining_date,
-            placement.placement_status
+            placement.designation,
+            placement.final_package,
+            placement.actual_joining_date,
+            placement.joining_status
         ))
 
     def all(self):
         query = "SELECT * FROM placements ORDER BY placement_id"
-        return self.fetch_all(query)
+        return self.run(query, fetch="all")
 
     def get(self, placement_id):
-        query = "SELECT * FROM placements WHERE placement_id = %s"
-        return self.fetch_one(query, (placement_id,))
+        query = """
+            SELECT * FROM placements
+            WHERE placement_id = %s
+        """
+        return self.run(query, (placement_id,), fetch="one")
 
-    def update_status(self, placement_id, placement_status):
+    def update_status(self, placement_id, joining_status):
         query = """
             UPDATE placements
-            SET placement_status = %s
+            SET joining_status = %s
             WHERE placement_id = %s
         """
 
-        return self.run(query, (placement_status, placement_id))
+        return self.run(query, (joining_status, placement_id))

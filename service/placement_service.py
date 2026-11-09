@@ -1,7 +1,7 @@
+
 from dao.placement_dao import PlacementDAO
 from dao.offer_dao import OfferDAO
 from dao.application_dao import ApplicationDAO
-from dao.job_dao import JobDAO
 from model.placement import Placement
 
 
@@ -11,7 +11,6 @@ class PlacementService:
         self.dao = PlacementDAO()
         self.offer_dao = OfferDAO()
         self.application_dao = ApplicationDAO()
-        self.job_dao = JobDAO()
 
     def create_placement(self, offer_id):
 
@@ -21,27 +20,35 @@ class PlacementService:
             raise ValueError("Offer not found")
 
         if offer["offer_status"] != "ACCEPTED":
-            raise ValueError("Placement can only be created for accepted offers")
+            raise ValueError("Offer must be accepted first")
 
-        application = self.application_dao.get(offer["application_id"])
+        application = self.application_dao.get(
+            offer["application_id"]
+        )
 
         if not application:
             raise ValueError("Application not found")
 
-        job = self.job_dao.get(application["job_id"])
-
-        if not job:
-            raise ValueError("Job not found")
-
         placement = Placement(
-            offer_id,
             application["candidate_id"],
-            job["company_id"],
+            self._get_company_id(application["job_id"]),
+            offer["designation"],
+            offer["package_lpa"],
             offer["joining_date"],
             "ACTIVE"
         )
 
         return self.dao.add(placement)
+
+    def _get_company_id(self, job_id):
+        from dao.job_dao import JobDAO
+
+        job = JobDAO().get(job_id)
+
+        if not job:
+            raise ValueError("Job not found")
+
+        return job["company_id"]
 
     def view_placements(self):
         return self.dao.all()

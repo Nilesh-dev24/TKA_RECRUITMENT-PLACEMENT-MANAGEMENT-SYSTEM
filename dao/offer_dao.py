@@ -1,3 +1,4 @@
+
 from dao.base_dao import BaseDAO
 from model.offer import Offer
 
@@ -23,11 +24,11 @@ class OfferDAO(BaseDAO):
 
     def all(self):
         query = "SELECT * FROM offers ORDER BY offer_id"
-        return self.fetch_all(query)
+        return self.run(query, fetch="all")
 
     def get(self, offer_id):
         query = "SELECT * FROM offers WHERE offer_id = %s"
-        return self.fetch_one(query, (offer_id,))
+        return self.run(query, (offer_id,), fetch="one")
 
     def update(self, offer_id, offer):
         query = """

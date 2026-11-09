@@ -7,7 +7,7 @@ from service.application_service import ApplicationService
 from service.interview_service import InterviewService
 from service.offer_service import OfferService
 from service.placement_service import PlacementService
-
+from service.report_service import ReportService
 
 def candidate_menu():
     service = CandidateService()
@@ -539,6 +539,30 @@ def placement_menu():
             print("Error:", error)
 
 
+def report_menu():
+    service = ReportService()
+
+    while True:
+        print("\n--- REPORTS MANAGEMENT ---")
+        print("1 Generate Summary Report")
+        print("0 Back")
+
+        choice = input("Choice: ").strip()
+
+        try:
+            if choice == "1":
+                service.generate_summary_report()
+
+            elif choice == "0":
+                break
+
+            else:
+                print("Invalid choice.")
+
+        except Exception as error:
+            print("Error generating report:", error)
+
+
 def main_menu():
     while True:
         print("\n======================================")
@@ -577,14 +601,15 @@ def main_menu():
         elif choice == "7":
             placement_menu()
 
+        elif choice == "8":
+            report_menu()
 
 
         elif choice == "9":
             print("Goodbye!")
             break
 
-        elif choice in (  "8"):
-            print("This module is scaffolded for the next development phase.")
+       
 
         else:
             print("Invalid choice.")
